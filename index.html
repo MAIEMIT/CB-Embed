@@ -1,0 +1,40 @@
+<html>
+<head>
+    <title>Chat with GPT</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .chat-container { width: 400px; margin: 0 auto; }
+        .messages { height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px; }
+        .input-box { display: flex; margin-top: 10px; }
+        input { width: 80%; padding: 10px; }
+        button { width: 20%; padding: 10px; }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="messages" id="chatMessages"></div>
+        <div class="input-box">
+            <input type="text" id="userInput" placeholder="Ask me anything...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const userInput = document.getElementById('userInput').value;
+            document.getElementById('chatMessages').innerHTML += `<p><strong>You:</strong> ${userInput}</p>`;
+
+            const response = await fetch('/api/gpt-chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: userInput })
+            });
+            const data = await response.json();
+
+            document.getElementById('chatMessages').innerHTML += `<p><strong>GPT:</strong> ${data.reply}</p>`;
+            document.getElementById('userInput').value = ''; // Clear input
+        }
+    </script>
+    <script src="js/chat.js"></script>
+</body>
+</html>
